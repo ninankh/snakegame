@@ -1,5 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
+using namespace std;
 typedef struct location
 {
      int x,y;
@@ -19,7 +20,7 @@ class object{
 
 class snakebody:public object{
     public:
-    snakebody(int direction=0,snakebody *pre=NULL,snakebody *next=NULL);
+    snakebody(int direction=0,snakebody *pre=nullptr,snakebody *next=nullptr);
     ~snakebody();
     void move();
     void setdirection(int direction);
@@ -41,7 +42,7 @@ class snake{
     {
         int length=1;
         snakebody head();
-        tail=NULL;
+        tail=nullptr;
     }
     ~snake(void);
     void growth(bool flag);
