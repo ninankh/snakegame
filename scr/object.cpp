@@ -1,19 +1,42 @@
-#include <iostream>
 #include "object.h"
-using namespace std;
+#include "tmanage.h"
+#include "game.h"
+
+
 
 //generating
-snakebody::snakebody(int direction,snakebody *p,snakebody *n){
+void snakebody::init(int direction,snakebody *p,snakebody *n,const char* name,location position){
     dire=direction;
-    pre=p;
-    next=n;
+    if (!p)
+    {
+        pre=p;
+    }
+    if(!n)
+    {
+        next=n;
+    }
+    sBody= TextureManager::LoadTexture(name);
+    visible=true;
+    pos=position;
 }
 
-snake::~snake(void){
-   // delete[] parts;
+void snake::init(){
+    length=2;
+    head = new snakebody(); 
+    //tail = new snakebody();
+    head->init(0,NULL,tail,"asset/shead.png",{0,0});
+    //tail->init(0,head,NULL,"asset/stail.png",{50,50});
+
 }
 
+snakebody::~snakebody(){
+    
+}
 
+snake::~snake(){
+    delete head;
+    delete tail;
+}
 
 
 //function about object
@@ -21,9 +44,29 @@ location object::getlocation(){
     return pos;
 }
 
+void object::update(){
+    pos.x++;
+    pos.y++;
+
+    srcR.h=32;
+    srcR.w=32;
+    srcR.x=0;
+    srcR.y=0;
+
+    desnR.x=pos.x;
+    desnR.y=pos.y;
+    desnR.w=srcR.w*2;
+    desnR.h=srcR.h*2;
+}
+
+
 //function about snake body
 void snakebody::setdirection(int direction){
     dire=direction;
+}
+
+int snakebody::getdirection(void){
+    return dire;
 }
 
 snakebody *snakebody::getpre(void){
@@ -31,6 +74,7 @@ snakebody *snakebody::getpre(void){
 }
 
 snakebody *snakebody::getnext(void){
+    cout<<"getnext"<<endl;
     return next;
 }
 
@@ -41,8 +85,34 @@ void snakebody::setpre(snakebody *p){
     pre=p;
 }
 
-int snakebody::getdirection(void){
-    return dire;
+
+
+
+void snake::sRender(){
+
+    snakebody *temp=head;
+    
+    
+    while (temp!=NULL)
+    {   
+        temp->renderobj();
+        cout<<"render"<<endl;
+        temp=temp->getnext();
+    }
+    
+}
+
+void snake::sUpdate(){
+
+    snakebody *temp=head;
+    while (temp!=NULL)
+    {   
+        temp->update();
+        cout<<"update"<<endl;
+        temp=temp->getnext();
+    }
+
+    
 }
 
 void snakebody::move(void){
@@ -66,20 +136,20 @@ void snakebody::move(void){
     } 
 }
 
+void snakebody::renderobj(){
+    if (visible)
+    {
+        SDL_RenderCopy(game::Renderer,sBody,NULL,&desnR);
+    }
+}
+
 //funciton about snake
-void snake::growth(bool flag){
-    int newdire=0;
-    snakebody *p=NULL;
-    if(tail==NULL){
-        int newdire=head->getdirection();
-        snakebody *p=head;
-    }
-    else{
-        int newdire=tail->getdirection();
-        snakebody *p=tail;
-    }
-    tail=new snakebody(newdire,p);
-    p->setnext(tail);
+void snake::growth(){
+    snakebody *temp=tail->getpre();
+    int newdire=temp->getdirection();
+    location pos=temp->getlocation();
+    snakebody *nBody;
+    nBody->init(newdire,temp,tail,"asset/sbody.png",pos);
     length++;
 }
 

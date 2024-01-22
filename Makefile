@@ -1,16 +1,16 @@
 
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp game.cpp object.cpp uibotton.cpp
+OBJS = scr/main.cpp scr/game.cpp scr/object.cpp scr/tmanage.cpp scr/map.cpp
 
 #CC specifies which compiler we're using
 CC = g++
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-COMPILER_FLAGS = -w -pedantic -Wall -Wextra -Wconversion
+COMPILER_FLAGS = -w -Wall -Werror -Wextra -Wconversion -Wno-unused-result -Wvla -Wpedantic 
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2
+LINKER_FLAGS = -lSDL2 -lSDL2_image -g
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = snakegame

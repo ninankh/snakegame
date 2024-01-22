@@ -1,8 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 #include "object.h"
+#include "tmanage.h"
+#include "map.h"
 #include <iostream>
-#include <SDL2/SDL.h>
+#include <stdio.h>
 using namespace std;
 
 class game{
@@ -15,13 +17,13 @@ class game{
     void render();
     void clean();
     bool getstate();
+    static SDL_Renderer *Renderer;
     private:
+    map *background;
     int timecount;
+    snake player;
     SDL_Window *window;
-    SDL_Renderer *Renderer;
     bool isrunning;
-
-
 
 };
 

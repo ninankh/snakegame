@@ -1,10 +1,12 @@
-#include <stdio.h>
 #include "game.h"
+
 
 
 game::game(){}
 
 game::~game(){}
+
+SDL_Renderer* game::Renderer=nullptr;
 
 void game::init(const char* title,int xpos,int ypos,int width, int height, bool fullscreen){
 	int flags=0;
@@ -23,6 +25,9 @@ void game::init(const char* title,int xpos,int ypos,int width, int height, bool 
 		}
 		else{cout<<"error"<<endl;}
 		isrunning=true;
+		player.init();
+		background=new map();
+		cout<<"init sucessfully"<<endl;
 	}
 	else{
 		isrunning=false;
@@ -49,11 +54,17 @@ bool game::getstate(){
 }
 void game::update(){
 	timecount++;
+	player.sUpdate();
+	cout<<"update"<<endl;
+	
 }
 
 void game::render(){
 	SDL_RenderClear(Renderer);
+	background->DrawMap();
+	player.sRender();
 	SDL_RenderPresent(Renderer);
+	cout<<"render"<<endl;
 }
 
 void game::clean(){
