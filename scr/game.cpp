@@ -57,9 +57,17 @@ bool game::getstate(){
 }
 void game::update(){
 	timecount++;
+	static bool flag=false;
+	if (player.getstate())
+	{
+		background->endgame();
+	}
+	else{
+	flag=player.eatcoins(*Coin);
 	player.sUpdate();
 	Coin->cupdate();
-	
+	if(flag) {cout<<"yes"<<endl;Coin->refresh(); player.growth();}
+	}	
 }
 
 void game::render(){

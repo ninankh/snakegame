@@ -47,6 +47,18 @@ class object{
     SDL_Rect srcR,desnR;
 };
 
+class coins:object{
+private:
+    location move;
+public:
+    coins();
+    ~coins();
+    location getlocation();
+    void refresh();
+    void cRender();
+    void cupdate();
+};
+
 
 class snake:object{
     public:
@@ -57,33 +69,22 @@ class snake:object{
     void sUpdate();
     bool changedire();
     void growth();
-    bool eatcoins(object coins);
+    bool eatcoins(coins c);
     void move();
-    bool died();
+    void died();
+    bool getstate();
     private:
+    bool grow=false;
+    bool dead=false;
     int change;
     SDL_Texture *shead;
-    SDL_Texture *stail;
     SDL_Texture *sbody;
-    SDL_Texture *tLeft;
-    SDL_Texture *tRight;
     int length;
     vector<location> pos;
     vector<int> dire;
-    SDL_Rect HdesnR;
 };
 
 
-class coins:object{
-private:
-    location move;
-public:
-    coins();
-    ~coins();
-    void refresh();
-    void cRender();
-    void cupdate();
-};
 
 
 

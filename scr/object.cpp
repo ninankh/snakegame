@@ -9,10 +9,8 @@
 void snake::init(){
     length=2;
     shead=TextureManager::LoadTexture("asset/shead.png");
-    stail=TextureManager::LoadTexture("asset/stail.png");
     sbody=TextureManager::LoadTexture("asset/sbody.png");
-    tLeft=TextureManager::LoadTexture("asset/left.png");
-    tRight=TextureManager::LoadTexture("asset/right.png");
+    dead=false;
     change=0;
     srcR.h=32;
     srcR.w=32;
@@ -22,13 +20,7 @@ void snake::init(){
     desnR.x=0;
     desnR.y=0;
     desnR.w=srcR.w;
-    desnR.h=srcR.h;
-
-    HdesnR.x=0;
-    HdesnR.y=0;
-    HdesnR.w=srcR.w;
-    HdesnR.h=srcR.h;
-    
+    desnR.h=srcR.h;    
 
     pos={{512,512},{512,544}};
     dire={0,0};
@@ -49,53 +41,44 @@ location object::getlocation(){
 
 //function about snake body
 void snake::sRender(){
-    HdesnR.x=pos[0].x;
-    HdesnR.y=pos[0].y;
-    for (int i=1;i<=length;i++)
+    for (int i=0;i<length;i++)
     {
-        desnR.x=pos[i-1].x;
-        desnR.y=pos[i-1].y;
-       if(i==1){
-            TextureManager::Draw(shead,srcR,HdesnR);
-            if(HdesnR.x>32*25 || HdesnR.y>32*25) {
-                if (HdesnR.x>32*2) {HdesnR.x=0; pos[0].x=0;}
-                if (HdesnR.y>32*2) {HdesnR.y=0; pos[0].y=0;}
-                TextureManager::Draw(shead,srcR,HdesnR);
-            }
+        desnR.x=pos[i].x;
+        desnR.y=pos[i].y;
+       if(i==0){
+            TextureManager::Draw(shead,srcR,desnR);
        }
        else{
-        if (i==length)
-        {
-            TextureManager::Draw(stail,srcR,desnR);
-            if(desnR.x>32*25 || desnR.y>32*25) {
-                if (desnR.x>32*2) {desnR.x=0; pos[i-1].x=0;}
-                if (desnR.y>32*2) {desnR.y=0; pos[i-1].y=0;}
-                TextureManager::Draw(shead,srcR,desnR);
-            }
-        }
-        else{
-            TextureManager::Draw(sbody,srcR,desnR);
-            if(desnR.x>32*25 || desnR.y>32*25) {
-                if (desnR.x>32*2) {desnR.x=0; pos[i-1].x=0;}
-                if (desnR.y>32*2) {desnR.y=0; pos[i-1].y=0;}
-                TextureManager::Draw(shead,srcR,desnR);
-            }
-        }
-       }      
 
-    }
+            TextureManager::Draw(sbody,srcR,desnR);
+            }      
+    }/*
+            if (desnR.x>32*25) {desnR.x=0; pos[i].x=0;}
+            if (desnR.x<-32){desnR.x=32*25; pos[i].x=32*25;}
+            if (desnR.y>32*25) {desnR.y=0; pos[i].y=0;}
+            if (desnR.y<-32) {desnR.y=32*25; pos[i].y=32*25;}
+            TextureManager::Draw(shead,srcR,desnR);
+            */ 
 }
     
 
 void snake::sUpdate(){
+    died();
+    if(dead) return;
     static vector<location> tempall=pos;
     static bool flag=false;
     if(pos[0].x%32==0 && pos[0].y%32==0){
     int currentd=dire[0];
     dire.insert(dire.begin(),currentd);
-    dire.pop_back();
     tempall.insert(tempall.begin(),pos[0]);
-    tempall.pop_back();
+    if(grow){
+    length++;
+    grow=false;}
+    else{
+    dire.pop_back();
+    tempall.pop_back(); 
+    }
+    
     pos=tempall;
     if(flag){
         switch (change)
@@ -195,25 +178,30 @@ bool snake::changedire(){
 
 //funciton about snake
 void snake::growth(){
-    location temppos=pos[length-1];
-    pos.insert(pos.end(),temppos);
-    int tempdire=dire[length-1];
-    dire.insert(dire.end(),tempdire);
-    length++;
+    grow=true;
 }
 
-bool snake::eatcoins(object coins){
-    location temp=coins.getlocation();
-    if(pos[0].x==temp.x && pos[length-1].y==temp.y) return true;
-    else return false;
+bool snake::eatcoins(coins c){
+    location temp=c.getlocation();
+    bool flag;
+    if(pos[0].x==temp.x && temp.y==pos[0].y) flag=true;
+    else{flag=false;}
+    return flag;
 }
 
-bool snake::died(){
-    if (pos[0].x==pos[length-1].x && pos[0].y==pos[length-1].y) return true;
-    else{return false;}
+void snake::died(){
+    location temp=pos[0];
+    if(temp.x<-30 || temp.y<-30 || temp.x>32*25+10 || temp.y>32*25+10)  dead=true;
+    for (int i = 2; i < length; i++)
+    {
+        if( length>=2 && temp.x==pos[i].x && temp.y ==pos[i].y) dead= true;
+    }
+    
 }
 
-
+bool snake::getstate(){
+    return dead;
+}
 //funciton about coins
 
 coins::coins(){
@@ -230,6 +218,11 @@ coins::coins(){
     desnR.y=move.y=oPosition.y*32;
 
 }
+
+coins::~coins(){
+
+}
+
 void coins::refresh(){
     oPosition.x=rand()%25;
     oPosition.y=rand()%25;
@@ -245,7 +238,6 @@ void coins::cupdate(){
     static int flag=0;
     if((desnR.y -move.y <=3) && flag==0) {
         desnR.y++;
-        cout<<desnR.y<<move.y<<endl;
     }
     else {
         if(desnR.y -move.y>=-3){
@@ -255,6 +247,9 @@ void coins::cupdate(){
         else{
             flag=0;
     }
-
     }
+}
+
+location coins::getlocation(){
+    return move;
 }
