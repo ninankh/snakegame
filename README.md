@@ -1,1 +1,2 @@
-# practise
+# snakegame practise
+very basic snakegame
