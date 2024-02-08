@@ -20,9 +20,9 @@ map::~map(){
 }
 
 void map::LoadMap(){
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 25; i++)
     {
-        for (int j = 0; j < 50; j++)
+        for (int j = 0; j < 25; j++)
         {
             if ((i%2==0 && j%2!=0) || (i%2!=0 && j%2==0))
             {
@@ -38,10 +38,10 @@ void map::LoadMap(){
 }
 
 void map::DrawMap(){
-   for (int i = 0; i < 50; i++)
+   for (int i = 0; i < 25; i++)
     {
         dest.x=i*32;
-        for (int j = 0; j < 50; j++)
+        for (int j = 0; j < 25; j++)
         {
             dest.y=j*32;
             switch (all[i][j])

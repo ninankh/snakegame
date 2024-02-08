@@ -6,3 +6,6 @@ void Entity::update(){
         for(auto& c: component) c->draw();    
 }
 
+Component::~Component(){
+
+}

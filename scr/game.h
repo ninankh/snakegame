@@ -7,6 +7,7 @@
 #include <stdio.h>
 using namespace std;
 
+
 class game{
     public:
     game();
@@ -18,7 +19,9 @@ class game{
     void clean();
     bool getstate();
     static SDL_Renderer *Renderer;
+    static SDL_Event event;
     private:
+    coins *Coin;
     map *background;
     int timecount;
     snake player;

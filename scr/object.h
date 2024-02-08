@@ -4,20 +4,42 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
+
 using namespace std;
 typedef struct location
 {
      int x,y;
 };
 
+/*class PositionComponent : public Component
+{
+    private:
+    float xpos=0;
+    float ypos=0;
+    public:
+    
+    int x(){ return xpos;}
+    int y(){ return ypos;}
+
+    void update() override
+    {
+        xpos++;
+        ypos++;
+    }
+
+    void setpos(float x, float y){
+        xpos=x;
+        ypos=y;
+    }
+};
+*/
+
 class object{
     public:
     object(){
         location oPosition={0,0};
     }
-    virtual void renderobj(){};
     virtual location getlocation();
-    virtual void update();
     protected:
     location oPosition;
     bool visible;
@@ -33,14 +55,18 @@ class snake:object{
     void init();
     void sRender();
     void sUpdate();
+    bool changedire();
     void growth();
     bool eatcoins(object coins);
-    void move(int direction);
+    void move();
     bool died();
     private:
+    int change;
     SDL_Texture *shead;
     SDL_Texture *stail;
     SDL_Texture *sbody;
+    SDL_Texture *tLeft;
+    SDL_Texture *tRight;
     int length;
     vector<location> pos;
     vector<int> dire;
@@ -50,11 +76,13 @@ class snake:object{
 
 class coins:object{
 private:
-
+    location move;
 public:
     coins();
     ~coins();
-    void disappear();
+    void refresh();
+    void cRender();
+    void cupdate();
 };
 
 

@@ -7,6 +7,9 @@ game::game(){}
 game::~game(){}
 
 SDL_Renderer* game::Renderer=nullptr;
+SDL_Event game::event;
+
+
 
 void game::init(const char* title,int xpos,int ypos,int width, int height, bool fullscreen){
 	int flags=0;
@@ -26,6 +29,7 @@ void game::init(const char* title,int xpos,int ypos,int width, int height, bool 
 		else{cout<<"error"<<endl;}
 		isrunning=true;
 		player.init();
+		Coin=new coins();
 		background=new map();
 		cout<<"init sucessfully"<<endl;
 	}
@@ -36,7 +40,6 @@ void game::init(const char* title,int xpos,int ypos,int width, int height, bool 
 
 
 void game::handleevent(){
-	SDL_Event event;
 	SDL_PollEvent(&event);
 	switch (event.type)
 	{
@@ -55,7 +58,7 @@ bool game::getstate(){
 void game::update(){
 	timecount++;
 	player.sUpdate();
-	cout<<"update"<<endl;
+	Coin->cupdate();
 	
 }
 
@@ -63,8 +66,8 @@ void game::render(){
 	SDL_RenderClear(Renderer);
 	background->DrawMap();
 	player.sRender();
+	Coin->cRender();
 	SDL_RenderPresent(Renderer);
-	cout<<"render"<<endl;
 }
 
 void game::clean(){
